@@ -14,7 +14,8 @@
 
 <body>
     <div class="itens">
-        <input id="card" type="file">
+
+
         <label for="pdv"> Qual o Primeiro numero do pdv? </label>
         <input type="number" name="pdv" id="pdv" />
         <label for="opc"> Qual o Primeiro numero do pdv do opcional? </label>
@@ -31,11 +32,9 @@
     let arrgeral = [];
 
     function call() {
-        let card = document.querySelector("#card");
         let pdv = document.querySelector("#pdv").value;
         let id = document.querySelector("#pdvopc").value;
-        console.log(card)
-        fetch("card").then((response) => {
+        fetch("csvjson.json").then((response) => {
             response.json().then((dados) => {
                 const itensList = document.getElementById("itensList");
                 dados.cardapio.forEach((i) => {
