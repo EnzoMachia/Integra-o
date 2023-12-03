@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>teste</title>
+    <style>
+        body {
+            background-color: gray;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="itens">
+        <input id="card" type="file">
+        <label for="pdv"> Qual o Primeiro numero do pdv? </label>
+        <input type="number" name="pdv" id="pdv" />
+        <label for="opc"> Qual o Primeiro numero do pdv do opcional? </label>
+        <input type="number" name="pdvopc" id="pdvopc" />
+        <button onclick="call()">Submit</button>
+    </div>
+    <ul id="itensList"></ul>
+</body>
+<script>
+
+    let idpdt = 1;
+    let idopc = 1;
+    let arrteste = [];
+    let arrgeral = [];
+
+    function call() {
+        let card = document.querySelector("#card");
+        let pdv = document.querySelector("#pdv").value;
+        let id = document.querySelector("#pdvopc").value;
+        console.log(card)
+        fetch("card").then((response) => {
+            response.json().then((dados) => {
+                const itensList = document.getElementById("itensList");
+                dados.cardapio.forEach((i) => {
+                    arrgeral.push([id, i.Tipo, i.Produto])
+                    if (i.Tipo == "PRODUCT") {
+                        const pdtElement = document.createElement("li");
+                        pdtElement.id = `pdt${idpdt++}`;
+                        pdtElement.innerHTML = `ID:  ${id} | Produto: ${i.Produto} | PDV:${pdv++}`;
+                        const qtopcInput = document.createElement("input");
+                        qtopcInput.id = `qtopc${idopc++}`;
+                        qtopcInput.type = "number";
+                        const enviarButton = document.createElement("button");
+                        enviarButton.innerText = "Enviar";
+                        enviarButton.onclick = exibeopc;
+                        pdtElement.appendChild(qtopcInput);
+                        pdtElement.appendChild(enviarButton);
+                        itensList.appendChild(pdtElement);
+                    }
+                    id++
+                });
+                callopc();
+            });
+        });
+    }
+
+    function callopc() {
+        arrgeral.forEach((i) => {
+            if (i[1] == "OPTION") {
+                arrteste.push(i)
+            }
+        })
+    }
+    let contprod = 0;
+    let contopc = 0;
+    function exibeopc() {
+
+
+        let qntopc = itensList.children[contprod].children[0].value
+
+        for (let i = 0; i < qntopc; i++) {
+            const createli = document.createElement("li")
+            itensList.children[contprod].appendChild(createli)
+            createli.innerHTML += `ID:${arrteste[contopc][0]} | Opcional:${arrteste[contopc][2]} | PDV:${arrteste[contopc][0]}`
+            contopc++
+
+        }
+
+
+        contprod++
+
+    }
+</script>
+
+</html>
