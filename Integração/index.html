@@ -22,6 +22,9 @@
         <input type="number" name="pdvopc" id="pdvopc" />
         <button onclick="call()">Submit</button>
     </div>
+    <div class="control">
+        <button onclick="voltar()">Corrigir Produto Anterior</button>
+    </div>
     <ul id="itensList"></ul>
 </body>
 <script>
@@ -30,13 +33,13 @@
     let idopc = 1;
     let arrteste = [];
     let arrgeral = [];
-
+    const itensList = document.getElementById("itensList");
     function call() {
         let pdv = document.querySelector("#pdv").value;
         let id = document.querySelector("#pdvopc").value;
         fetch("csvjson.json").then((response) => {
             response.json().then((dados) => {
-                const itensList = document.getElementById("itensList");
+
                 dados.cardapio.forEach((i) => {
                     arrgeral.push([id, i.Tipo, i.Produto])
                     if (i.Tipo == "PRODUCT") {
@@ -52,6 +55,7 @@
                         pdtElement.appendChild(qtopcInput);
                         pdtElement.appendChild(enviarButton);
                         itensList.appendChild(pdtElement);
+
                     }
                     id++
                 });
@@ -66,26 +70,49 @@
                 arrteste.push(i)
             }
         })
+        itensList.children[contprod].style.backgroundColor = "red"
     }
     let contprod = 0;
     let contopc = 0;
+    
+    function deleteopc() {
+
+    } 
+    function voltar() {
+        itensList.children[contprod].style.backgroundColor = "gray"
+        contprod--;
+        itensList.children[contprod].style.backgroundColor = "red"
+        let qntopc = itensList.children[contprod].children[0].value
+        console.log(qntopc)
+        itensList.children[contprod].lastElementChild.innerHTML =  ""
+        for (let i = 0; i < qntopc; i++) {
+        contopc-- 
+        }
+        console.log(contopc)
+    }
     function exibeopc() {
 
 
         let qntopc = itensList.children[contprod].children[0].value
+        const createul = document.createElement("ul")
 
         for (let i = 0; i < qntopc; i++) {
             const createli = document.createElement("li")
-            itensList.children[contprod].appendChild(createli)
+            createul.id = "listopc"
+
+            itensList.children[contprod].appendChild(createul)
             createli.innerHTML += `ID:${arrteste[contopc][0]} | Opcional:${arrteste[contopc][2]} | PDV:${arrteste[contopc][0]}`
+            createul.appendChild(createli)
             contopc++
 
         }
-
-
+        itensList.children[contprod].style.backgroundColor = "gray"
         contprod++
+        console.log(contprod)
+        itensList.children[contprod].style.backgroundColor = "red"
 
     }
+
 </script>
 
 </html>
